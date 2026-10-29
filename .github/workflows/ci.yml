@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unittest:
+    name: unittest (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # The connect-module tests execute the generated .mjs against a Node stub
+      # of the documented ego-browser API.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Compile the helper
+        run: python -m py_compile skills/deepseek-harness-operator/scripts/harness_operator.py
+
+      # Pure unit tests only: no skill install, no DeepSeek account, no network,
+      # no real harness process is started.
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Check that private artifacts were not committed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(operator-state\.json|startup-.*\.log|connect-.*\.mjs)$'; then
+            echo "private runtime artifacts must not be committed" >&2
+            exit 1
+          fi

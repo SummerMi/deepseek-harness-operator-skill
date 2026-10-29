@@ -1,0 +1,4 @@
+interface:
+  display_name: "DeepSeek Harness Operator"
+  short_description: "Dispatch and verify background Harness work"
+  default_prompt: "Use $deepseek-harness-operator to dispatch this task to the background DeepSeek Harness and verify the artifacts it produces."

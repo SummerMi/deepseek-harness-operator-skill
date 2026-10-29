@@ -1,0 +1,35 @@
+# Private runtime state written by scripts/operator.py.
+# These files can contain the authenticated Harness URL and local machine paths.
+operator-private/
+.dsh/
+operator-state.json
+*operator-state*.json
+startup-*.log
+startup-*.stdout.log
+startup-*.stderr.log
+connect-*.mjs
+
+# Generated connect modules are private artefacts, never published.
+*.connect.mjs
+
+# Test scratch space (repo-local, see tests/test_operator.py).
+tmp/
+.pytest_cache/
+
+# Python caches and local virtual environments.
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.mypy_cache/
+
+# Editor and OS noise.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Never commit local screenshots or session captures.
+screenshots/
+*.png
